@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vColor;
+varying vec4 fColor;
+void
+main()
+{
+    fColor=vColor;
+    gl_Position = vPosition;
+}
+</script>
+
+
+<!--Fragment-shader1 is a Fragment shader that determines gl_FragColor using varying.-->
+<script id="fragment-shader1" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 fColor;
+void
+main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+
+
+<!--Fragment-shader2 is a Fragment shader that determines gl_FragColor using uniform.-->
+<script id="fragment-shader2" type="x-shader/x-fragment">
+precision mediump float;
+uniform vec4 uColor;
+void
+main()
+{
+    gl_FragColor = uColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="TeamHW1.js"></script>
+</head>
+
+<body>
+<p> Team9 : 201532749 이재윤 201534103 하성혁 201635825 오성원</p>
+<canvas id="gl-canvas" width="1050" height="750">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+</body>
+</html>
