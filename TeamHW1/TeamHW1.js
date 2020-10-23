@@ -1,10 +1,13 @@
-
 var gl;
+var stars = [];
 var points;
 var maxNumTriangles = 200;
 var maxNumVertices = 3* maxNumTriangles;
 var index = 0;
 var redraw = false;
+var theta = 0.0;
+var thetaLoc;
+var direction = true;
 
 var colors = [
 
@@ -31,11 +34,14 @@ window.onload = function init()
     // Specify the background color as RGB (0.13, 0.45, 0.15, 0.8) which are grass colors.
     gl.clearColor( 0.13, 0.45, 0.15, 0.8 );
 
+
     //  Load shaders and initialize attribute buffers
     // Specify using Fragment_shader1 and vertex-shader as program1.
     var program1 = initShaders( gl, "vertex-shader", "fragment-shader1" );
-    // Specify using Fragment_shader2 and vertex-shader as program1.
+    // Specify using Fragment_shader2 and vertex-shader as program2.
     var program2 = initShaders( gl, "vertex-shader", "fragment-shader2" );
+    // Specify using Fragment_shader2 and vertex-shader2 as program3.
+    var program3 = initShaders( gl, "vertex-shader2", "fragment-shader1" );
 
     // First use program1.
     gl.useProgram( program1 );
@@ -786,78 +792,151 @@ window.onload = function init()
 
     gl.drawArrays( gl.LINES, 0, 36);
 
+    //direction
+    document.getElementById("Direction").onclick = function () {
+        console.log(event.button)
+        direction = !direction;
+    };
 
-    
-    gl.useProgram(program1);
+  //fish------------------------------------------------------------------
+ gl.useProgram(program3);
+  var vertices = [
+      vec2(0.175, 0.3),
+      vec2(0.3, 0.425),
+      vec2(0.3, 0.175),
+      vec2(0.275, 0.3),
+      vec2(0.3, 0.3125),
+      vec2(0.3, 0.2875),
+      vec2(0.3, 0.425),
+      vec2(0.3, 0.175),
+      vec2(0.55 ,0.425),
+      vec2(0.3, 0.175),
+      vec2(0.55, 0.425),
+      vec2(0.55, 0.175),
+      vec2(0.55, 0.425),
+      vec2(0.55, 0.175),
+      vec2(0.675, 0.3),
+      vec2(0.675, 0.3),
+      vec2(0.8, 0.425),
+      vec2(0.8, 0.175),
+  ];
 
-    canvas.addEventListener('mousedown', function(event){
+  var colors = [
+      vec4(1,1,0,1),
+      vec4(1,0.6,0,1),
+      vec4(1,0.6,0,1),
+      vec4(0,0,0,1),
+      vec4(0,0,0,1),
+      vec4(0,0,0,1),
+      vec4(1,0.6,0,1),
+      vec4(1,0.6,0,1),
+      vec4(1,0,0,1),
+      vec4(1,0.6,0,1),
+      vec4(1,0,0,1),
+      vec4(1,0,0,1),
+      vec4(1,0,0,1),
+      vec4(1,0,0,1),
+      vec4(1,1,0,1),
+      vec4(1,1,0,1),
+      vec4(1,1,0,1),
+      vec4(1,0.2,0,1)
+  ];
 
-      var cx = 2*event.clientX/canvas.width-1;
-      var cy = 2*(canvas.height-event.clientY)/canvas.height-1;
 
-      var t1_v1_x = cx - 0.025;
-      var t1_v1_y = cy + 0.01;
-      var t1_v2_x = cx;
-      var t1_v2_y = cy - 0.01;
-      var t1_v3_x = cx + 0.025;
-      var t1_v3_y = cy + 0.01;
+  var bufferId = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+  gl.bufferData( gl.ARRAY_BUFFER,flatten(vertices), gl.STATIC_DRAW );
 
-      var t2_v1_x = cx - 0.02;
-      var t2_v1_y = cy - 0.03;
-      var t2_v2_x = cx;
-      var t2_v2_y = cy + 0.03;
-      var t2_v3_x = cx;
-      var t2_v3_y = cy - 0.01;
+  // Associate vertex data buffer with shader variables
 
-      var t3_v1_x = cx ;
-      var t3_v1_y = cy + 0.03;
-      var t3_v2_x = cx ;
-      var t3_v2_y = cy - 0.01;
-      var t3_v3_x = cx + 0.02;
-      var t3_v3_y = cy - 0.03;
-     
+  var vPosition = gl.getAttribLocation( program3, "vPosition" );
+  gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
+  gl.enableVertexAttribArray( vPosition );
 
-      //define star vertex
-      var t = [
-        t1_v1_x, t1_v1_y, t1_v2_x, t1_v2_y, t1_v3_x, t1_v3_y,
-        t2_v1_x, t2_v1_y, t2_v2_x, t2_v2_y, t2_v3_x, t2_v3_y,
-        t3_v1_x, t3_v1_y, t3_v2_x, t3_v2_y, t3_v3_x, t3_v3_y
-      
-      ];
-     
-      index+=9; //vertex 9
+  var vertexColorBufferId = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBufferId);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
 
-      var color = vec4(1.0, 1.0, 0.0, 1.0); //set color
+  var vColor = gl.getAttribLocation(program3, "vColor");
+  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(vColor);
 
-      var draw_Buffer = gl.createBuffer();
-      gl.bindBuffer( gl.ARRAY_BUFFER, draw_Buffer);
-      gl.bufferData( gl.ARRAY_BUFFER, flatten(t), gl.STATIC_DRAW );
+  thetaLoc = gl.getUniformLocation(program3,"theta");
 
-      // Associate out shader variables with our data buffer
-      var vPosition = gl.getAttribLocation( program1, "vPosition" );
-      gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-      gl.enableVertexAttribArray( vPosition );
+  //decide direction
+  theta += (direction ? 0.1 : -0.1);
+  gl.uniform1f( thetaLoc, theta );
+  gl.drawArrays( gl.TRIANGLES, 0, 21);
 
-      var cBuffer = gl.createBuffer();
-      gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer);
-      gl.bufferData( gl.ARRAY_BUFFER, flatten(color), gl.STATIC_DRAW );
 
-      // Associate out shader variables with our data buffer
-      var vColor = gl.getAttribLocation( program1, "vColor" );
-      gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-      gl.disableVertexAttribArray(vColor);
-      gl.vertexAttrib4f(vColor, 1.0, 1.0, 0.0, 1.0);
-    
+  //Draw star-------------------------------------------------------------------
+  gl.useProgram(program1);
 
-    render();
-      
-  });
+  canvas.addEventListener('mousedown', function(event){
 
-	
+    var cx = 2*event.clientX/canvas.width-1;
+    var cy = 2*(canvas.height-event.clientY)/canvas.height-1;
+
+    var t1_v1_x = cx - 0.025;
+    var t1_v1_y = cy + 0.01;
+    var t1_v2_x = cx;
+    var t1_v2_y = cy - 0.01;
+    var t1_v3_x = cx + 0.025;
+    var t1_v3_y = cy + 0.01;
+
+    var t2_v1_x = cx - 0.02;
+    var t2_v1_y = cy - 0.03;
+    var t2_v2_x = cx;
+    var t2_v2_y = cy + 0.03;
+    var t2_v3_x = cx;
+    var t2_v3_y = cy - 0.01;
+
+    var t3_v1_x = cx ;
+    var t3_v1_y = cy + 0.03;
+    var t3_v2_x = cx ;
+    var t3_v2_y = cy - 0.01;
+    var t3_v3_x = cx + 0.02;
+    var t3_v3_y = cy - 0.03;
+
+
+    //add star vertex in 'stars' array 
+    stars.push(t1_v1_x, t1_v1_y, t1_v2_x, t1_v2_y, t1_v3_x, t1_v3_y, t2_v1_x, t2_v1_y, t2_v2_x, t2_v2_y, t2_v3_x,
+      t2_v3_y, t3_v1_x, t3_v1_y, t3_v2_x, t3_v2_y, t3_v3_x, t3_v3_y);
+
+    index+=9; //vertex 9
+});
+
+var color = vec4(1.0, 1.0, 0.0, 1.0); //set color
+
+var draw_Buffer = gl.createBuffer();
+gl.bindBuffer( gl.ARRAY_BUFFER, draw_Buffer);
+//gl.bufferData( gl.ARRAY_BUFFER, flatten(t), gl.STATIC_DRAW );
+gl.bufferData( gl.ARRAY_BUFFER, flatten(stars), gl.STATIC_DRAW );
+
+// Associate out shader variables with our data buffer
+var vPosition = gl.getAttribLocation( program1, "vPosition" );
+gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
+gl.enableVertexAttribArray( vPosition );
+
+var cBuffer = gl.createBuffer();
+gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer);
+gl.bufferData( gl.ARRAY_BUFFER, flatten(color), gl.STATIC_DRAW );
+
+// Associate out shader variables with our data buffer
+var vColor = gl.getAttribLocation( program1, "vColor" );
+gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+gl.disableVertexAttribArray(vColor);
+gl.vertexAttrib4f(vColor, 1.0, 1.0, 0.0, 1.0);
+gl.drawArrays( gl.TRIANGLES, 0, index);
+
+requestAnimFrame(init); 
 };
 
-function render() {
 
-	gl.drawArrays( gl.TRIANGLES, 0, index);
-	window.requestAnimationFrame(render);
+function render_rotating() {
+   gl.clear( gl.COLOR_BUFFER_BIT );
+   theta += 0.1;
+   gl.uniform1f( thetaLoc, theta );
+   gl.drawArrays( gl.TRIANGLES, 0, 21);
+
 }

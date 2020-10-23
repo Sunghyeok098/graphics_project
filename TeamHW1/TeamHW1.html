@@ -17,6 +17,27 @@ main()
 </script>
 
 
+<script id="vertex-shader2" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vColor;
+uniform float theta;
+varying vec4 fColor;
+void
+main()
+{
+    fColor = vColor;
+    float s = sin( theta );
+    float c = cos( theta );
+
+    //vertex shader에서 theta값을 받아서 각각의 이동한 vertex를 구하는 일을 한다.
+    gl_Position.x = 0.14 * (-s * vPosition.y + c * vPosition.x) +0.43;
+    gl_Position.y =  0.2 * (s * vPosition.x + c * vPosition.y) -0.6;
+    gl_Position.z = 0.0;
+    gl_Position.w = 1.0;
+}
+</script>
+
+
 <!--Fragment-shader1 is a Fragment shader that determines gl_FragColor using varying.-->
 <script id="fragment-shader1" type="x-shader/x-fragment">
 precision mediump float;
@@ -46,9 +67,10 @@ main()
 <script type="text/javascript" src="../Common/MV.js"></script>
 <script type="text/javascript" src="TeamHW1.js"></script>
 </head>
-
-<body>
 <p> Team9 : 201532749 이재윤 201534103 하성혁 201635825 오성원</p>
+<button id="Direction">Change Rotation Direction</button>
+<p></p>
+<body>
 <canvas id="gl-canvas" width="1050" height="750">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
