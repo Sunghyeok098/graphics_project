@@ -16,7 +16,7 @@ main()
 }
 </script>
 
-
+<!--a shader used to rotate fish. -->
 <script id="vertex-shader2" type="x-shader/x-vertex">
 attribute vec4 vPosition;
 attribute vec4 vColor;
@@ -29,7 +29,9 @@ main()
     float s = sin( theta );
     float c = cos( theta );
 
-    //vertex shader에서 theta값을 받아서 각각의 이동한 vertex를 구하는 일을 한다.
+    //Take the theta value from js to change the coordinate value
+    //according to the theta, shrink the picture, and move the coordinates
+    //toward the pond.
     gl_Position.x = 0.14 * (-s * vPosition.y + c * vPosition.x) +0.43;
     gl_Position.y =  0.2 * (s * vPosition.x + c * vPosition.y) -0.6;
     gl_Position.z = 0.0;

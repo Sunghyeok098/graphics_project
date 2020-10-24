@@ -899,7 +899,7 @@ window.onload = function init()
     var t3_v3_y = cy - 0.03;
 
 
-    //add star vertex in 'stars' array 
+    //add star vertex in 'stars' array
     stars.push(t1_v1_x, t1_v1_y, t1_v2_x, t1_v2_y, t1_v3_x, t1_v3_y, t2_v1_x, t2_v1_y, t2_v2_x, t2_v2_y, t2_v3_x,
       t2_v3_y, t3_v1_x, t3_v1_y, t3_v2_x, t3_v2_y, t3_v3_x, t3_v3_y);
 
@@ -929,14 +929,5 @@ gl.disableVertexAttribArray(vColor);
 gl.vertexAttrib4f(vColor, 1.0, 1.0, 0.0, 1.0);
 gl.drawArrays( gl.TRIANGLES, 0, index);
 
-requestAnimFrame(init); 
+requestAnimFrame(init);
 };
-
-
-function render_rotating() {
-   gl.clear( gl.COLOR_BUFFER_BIT );
-   theta += 0.1;
-   gl.uniform1f( thetaLoc, theta );
-   gl.drawArrays( gl.TRIANGLES, 0, 21);
-
-}
