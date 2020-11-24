@@ -1,22 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html>
+  <script id="vertex-shader" type="x-shader/x-vertex">
+  varying lowp vec4 vColor;
+  attribute vec2 aTextureCoord;
+  attribute vec3 aVertexPosition;
+  attribute vec4 aVertexColor;
+
+  uniform mat4 uModelMatrix;
+  uniform mat4 uViewMatrix;
+  uniform mat4 uProjectionMatrix;
+  varying highp vec2 vTextureCoord;
+
+  void main() {
+
+    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+    vColor = aVertexColor;
+    vTextureCoord = aTextureCoord;
+  }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision lowp float;
+    varying lowp vec4 vColor;
+    varying highp vec2 vTextureCoord;
+    uniform sampler2D uSampler;
+
+  void main() {
+      gl_FragColor = texture2D(uSampler, vTextureCoord);
+  }
+  </script>
+
   <head>
     <meta charset="utf-8">
-    <title>WebGL Demo</title>
+    <title>Tunnel Maze</title>
+
+    <table text-align="center" width=1100px>
+  
+      <th><p id="level"> 1 </p></th>
+      <th><p><button onClick="window.location.reload()" style="margin-left:60px;font-size:18px;">restart</button></p></th>
+      <th><p id="score"> 0 </p></th>
+      
+      
+    </table>
+
+    
   </head>
 
   <body>
-    <canvas id="glcanvas" width="1100" height="650"></canvas><br><br><br>
-    <!-- <h3 id="theta">0</h3><br> -->
-    <!-- <h3 id="alpha">0</h3><br> -->
-    <!-- <h3 id="frames">0</h3><br> -->
-    <h3 id="level">1</h3><br>
-    <h3 id="score">0</h3><br>
-    <button onClick="window.location.reload()">restart</a>
-    <!-- <h3 id="speed">0</h3><br> -->
+
+    <canvas id="gl-canvas" width="1100" height="650"></canvas><br><br>
+
   </body>
 
+  <script type="text/javascript" src="webgl-utils.js"></script>
+  <script type="text/javascript" src="initShaders.js"></script>
+  <script type="text/javascript" src="maze.js"></script>
   <script src="gl-matrix.js"></script>
-  <script src="shader-const.js"></script>
-  <script src="aanshul-webgl.js"></script>
+  
 </html>
